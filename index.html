@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#061109" />
+  <title>FK SprintGate Ziel</title>
+  <style>
+    :root{color-scheme:dark;--bg:#061109;--card:#0d1b11;--line:#34d058;--muted:#9aa7a0;--warn:#ffb020}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#030805,var(--bg));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;color:#fff;min-height:100vh}
+    main{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 28px)}
+    h1{font-size:28px;margin:6px 0 2px}.sub{color:var(--muted);margin:0 0 14px}.card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin:12px 0}.row{display:flex;gap:10px;align-items:center}.grow{flex:1}.statusDot{width:10px;height:10px;border-radius:99px;background:var(--warn)}
+    button{appearance:none;border:0;border-radius:14px;padding:14px 16px;font-weight:800;font-size:16px;background:var(--line);color:#031006;width:100%}button.secondary{background:#17251b;color:#fff;border:1px solid rgba(255,255,255,.12)}button:disabled{opacity:.45}
+    .videoWrap{position:relative;overflow:hidden;border-radius:18px;background:#000;aspect-ratio:9/16;max-height:70vh;touch-action:none}video{width:100%;height:100%;object-fit:cover;display:block}.finishLine{position:absolute;top:0;bottom:0;width:3px;background:#ff365e;left:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 18px #ff365e}.finishTag{position:absolute;top:12px;transform:translateX(-50%);background:#ff365e;color:white;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:800;left:50%}.flashMarker{position:absolute;width:44px;height:44px;border:3px solid #ffe600;border-radius:50%;transform:translate(-50%,-50%);left:50%;top:18%;box-shadow:0 0 18px rgba(255,230,0,.5)}.flashMarker:after{content:"STARTLICHT";position:absolute;top:46px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;background:rgba(0,0,0,.65);padding:3px 5px;border-radius:5px;white-space:nowrap}
+    label{font-size:13px;color:var(--muted);display:block;margin:9px 0 4px}input[type=range]{width:100%}.big{font-size:62px;font-weight:900;letter-spacing:-2px;text-align:center;font-variant-numeric:tabular-nums}.resultMeta{text-align:center;color:var(--muted)}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(52,208,88,.13);color:#7df296;font-size:12px;font-weight:700}.warn{color:var(--warn);font-size:12px}.help{font-size:13px;color:var(--muted);line-height:1.45}.hidden{display:none!important}.debug{font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;color:#86938b;white-space:pre-wrap}canvas{display:none}
+  </style>
+</head>
+<body>
+<main>
+  <div class="pill">Safari-Zielgerät · keine App</div>
+  <h1>FK SprintGate</h1>
+  <p class="sub" id="runMeta">Ziel-Gate vorbereiten</p>
+
+  <section class="card">
+    <div class="row"><span class="statusDot" id="dot"></span><strong id="stateText">Kamera noch nicht gestartet</strong></div>
+  </section>
+
+  <section class="videoWrap" id="videoWrap">
+    <video id="video" playsinline muted></video>
+    <div class="finishLine" id="finishLine"></div>
+    <div class="finishTag" id="finishTag">ZIEL</div>
+    <div class="flashMarker" id="flashMarker"></div>
+  </section>
+  <canvas id="canvas" width="320" height="180"></canvas>
+
+  <section class="card" id="setupCard">
+    <button id="cameraBtn">Kamera starten</button>
+    <div id="controls" class="hidden">
+      <p class="help"><b>1.</b> Tippe im Kamerabild auf die Stelle, an der du das Start-iPhone bzw. dessen Taschenlampe siehst. Der gelbe Kreis muss dort sitzen.</p>
+      <label>Ziellinie verschieben</label>
+      <input id="finishSlider" type="range" min="10" max="90" value="50" step="1" />
+      <details>
+        <summary>Empfindlichkeit</summary>
+        <label>Startlicht-Schwelle <span id="flashV">38</span></label>
+        <input id="flashSlider" type="range" min="12" max="90" value="38" step="1" />
+        <label>Zielbewegung <span id="motionV">12</span>%</label>
+        <input id="motionSlider" type="range" min="4" max="40" value="12" step="1" />
+      </details>
+      <div style="height:10px"></div>
+      <button id="armBtn">Ziel-Gate scharf schalten</button>
+      <div style="height:8px"></div>
+      <button id="resetBtn" class="secondary">Zurücksetzen</button>
+      <p class="warn">Prototyp: Noch nicht als zertifizierte Lichtschranke verwenden.</p>
+    </div>
+  </section>
+
+  <section class="card hidden" id="resultCard">
+    <div class="resultMeta" id="resultPlayer"></div>
+    <div class="big" id="resultTime">0.000 s</div>
+    <div class="resultMeta" id="resultSpeed"></div>
+    <div style="height:14px"></div>
+    <button id="shareBtn">Ergebnis teilen</button>
+    <div style="height:8px"></div>
+    <button id="newBtn" class="secondary">Neuer Lauf</button>
+  </section>
+
+  <section class="card">
+    <div class="help"><b>Messprinzip:</b> Das Ziel-iPhone erkennt zuerst den Lichtimpuls des Start-iPhones und danach die Bewegung an der roten Ziellinie. Beide Zeitpunkte entstehen auf demselben Gerät – dadurch brauchen die beiden iPhones keine synchronisierten Uhren.</div>
+    <div class="debug" id="debug"></div>
+  </section>
+</main>
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const video = $('video'), canvas = $('canvas'), ctx = canvas.getContext('2d', { willReadFrequently:true });
+  const dot = $('dot'), stateText = $('stateText'), controls = $('controls');
+  const finishLine = $('finishLine'), finishTag = $('finishTag'), flashMarker = $('flashMarker');
+  const params = new URLSearchParams(location.search);
+  const distance = Math.max(1, Number(params.get('d')) || 20);
+  const player = (params.get('p') || '').slice(0,60);
+  $('runMeta').textContent = `${player ? player + ' · ' : ''}${distance} m`;
+
+  let stream = null;
+  let state = 'IDLE';
+  let flashX = .50, flashY = .18, finishX = .50;
+  let baselineSamples = [], baseline = 0;
+  let startT = null, finishT = null;
+  let previousGray = null, motionStreak = 0;
+  let lastFlashLuma = 0, lastMotion = 0;
+  let armedAt = 0;
+
+  const setState = (s, text, color='#ffb020') => {
+    state = s; stateText.textContent = text; dot.style.background = color;
+  };
+
+  function setMarker() {
+    flashMarker.style.left = (flashX*100)+'%'; flashMarker.style.top = (flashY*100)+'%';
+    finishLine.style.left = (finishX*100)+'%'; finishTag.style.left = (finishX*100)+'%';
+  }
+  setMarker();
+
+  $('cameraBtn').addEventListener('click', async () => {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio:false,
+        video:{ facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:720}, frameRate:{ideal:60,max:60} }
+      });
+      video.srcObject = stream;
+      await video.play();
+      $('cameraBtn').classList.add('hidden'); controls.classList.remove('hidden');
+      setState('READY','Kamera bereit','#34d058');
+      startFrameLoop();
+    } catch (e) {
+      setState('ERROR','Kamera nicht verfügbar','#ff365e');
+      alert('Kamerazugriff konnte nicht gestartet werden. Bitte Safari-Kameraberechtigung prüfen.');
+    }
+  });
+
+  $('videoWrap').addEventListener('pointerup', (ev) => {
+    const r = $('videoWrap').getBoundingClientRect();
+    flashX = Math.min(.96, Math.max(.04, (ev.clientX-r.left)/r.width));
+    flashY = Math.min(.96, Math.max(.04, (ev.clientY-r.top)/r.height));
+    setMarker();
+  });
+
+  $('finishSlider').addEventListener('input', e => { finishX = Number(e.target.value)/100; setMarker(); });
+  $('flashSlider').addEventListener('input', e => $('flashV').textContent = e.target.value);
+  $('motionSlider').addEventListener('input', e => $('motionV').textContent = e.target.value);
+
+  $('armBtn').addEventListener('click', () => {
+    startT = finishT = null; motionStreak = 0; baselineSamples = []; previousGray = null;
+    armedAt = performance.now();
+    setState('CALIBRATING','Startlicht wird kalibriert…','#ffb020');
+    $('resultCard').classList.add('hidden');
+    setTimeout(() => {
+      baseline = baselineSamples.length ? baselineSamples.reduce((a,b)=>a+b,0)/baselineSamples.length : lastFlashLuma;
+      setState('ARMED','SCHARF – warte auf Startlicht','#34d058');
+    }, 1300);
+  });
+
+  function reset() {
+    startT = finishT = null; motionStreak = 0; baselineSamples=[]; previousGray=null;
+    $('resultCard').classList.add('hidden');
+    setState(stream ? 'READY':'IDLE', stream ? 'Kamera bereit':'Kamera noch nicht gestartet', stream ? '#34d058':'#ffb020');
+  }
+  $('resetBtn').addEventListener('click', reset); $('newBtn').addEventListener('click', reset);
+
+  function frame(now) {
+    if (video.readyState >= 2) {
+      const W=320, H=180; canvas.width=W; canvas.height=H;
+      ctx.drawImage(video,0,0,W,H);
+      const image = ctx.getImageData(0,0,W,H).data;
+      lastFlashLuma = regionLuma(image,W,H,flashX,flashY);
+      if (state === 'CALIBRATING') baselineSamples.push(lastFlashLuma);
+
+      if (state === 'ARMED' && now-armedAt > 1300) {
+        const threshold = Number($('flashSlider').value);
+        if (lastFlashLuma > baseline + threshold) {
+          startT = now;
+          previousGray = grayBand(image,W,H,finishX);
+          setState('RUNNING','START erkannt – warte auf Zieleinlauf','#00e5ff');
+          if (navigator.vibrate) navigator.vibrate(35);
+        }
+      } else if (state === 'RUNNING' && startT && now-startT > 350) {
+        const current = grayBand(image,W,H,finishX);
+        if (previousGray) {
+          lastMotion = motionRatio(previousGray,current);
+          const needed = Number($('motionSlider').value)/100;
+          motionStreak = lastMotion >= needed ? motionStreak+1 : 0;
+          if (motionStreak >= 2) {
+            finishT = now;
+            completeRun();
+          }
+        }
+        previousGray = current;
+      }
+      $('debug').textContent = `Licht ${lastFlashLuma.toFixed(1)} · Basis ${baseline.toFixed(1)} · Zielbewegung ${(lastMotion*100).toFixed(1)}%`;
+    }
+    scheduleFrame();
+  }
+
+  function scheduleFrame(){
+    if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) video.requestVideoFrameCallback((now)=>frame(now));
+    else requestAnimationFrame(frame);
+  }
+  function startFrameLoop(){ scheduleFrame(); }
+
+  function regionLuma(data,W,H,nx,ny){
+    const cx=Math.round(nx*W), cy=Math.round(ny*H), r=7; let sum=0,n=0;
+    for(let y=Math.max(0,cy-r);y<Math.min(H,cy+r);y+=2){
+      for(let x=Math.max(0,cx-r);x<Math.min(W,cx+r);x+=2){
+        const i=(y*W+x)*4; sum += .2126*data[i]+.7152*data[i+1]+.0722*data[i+2]; n++;
+      }
+    }
+    return n ? sum/n : 0;
+  }
+
+  function grayBand(data,W,H,nx){
+    const cx=Math.round(nx*W), half=4; const arr=[];
+    for(let y=8;y<H-8;y+=2){
+      for(let x=Math.max(0,cx-half);x<Math.min(W,cx+half);x+=2){
+        const i=(y*W+x)*4; arr.push((data[i]+data[i+1]+data[i+2])/3);
+      }
+    }
+    return arr;
+  }
+  function motionRatio(a,b){
+    const n=Math.min(a.length,b.length); let changed=0;
+    for(let i=0;i<n;i++) if(Math.abs(a[i]-b[i])>24) changed++;
+    return n ? changed/n : 0;
+  }
+
+  function completeRun(){
+    const seconds=(finishT-startT)/1000;
+    if (!(seconds>0.2 && seconds<60)) { reset(); return; }
+    const speed=(distance/seconds)*3.6;
+    $('resultTime').textContent=seconds.toFixed(3)+' s';
+    $('resultPlayer').textContent=`${player || 'Sprint'} · ${distance} m`;
+    $('resultSpeed').textContent=`Ø ${speed.toFixed(2)} km/h`;
+    $('resultCard').classList.remove('hidden');
+    setState('DONE','ZIEL erkannt','#34d058');
+    $('resultCard').scrollIntoView({behavior:'smooth',block:'center'});
+    window.__lastResult={seconds,speed,distance,player,ts:new Date().toISOString()};
+  }
+
+  $('shareBtn').addEventListener('click', async () => {
+    const r=window.__lastResult; if(!r) return;
+    const text=`FK SprintGate\n${r.player ? r.player+' · ' : ''}${r.distance} m\n${r.seconds.toFixed(3)} s · ${r.speed.toFixed(2)} km/h\nPrototypmessung`;
+    try { if(navigator.share) await navigator.share({title:'FK SprintGate',text}); else await navigator.clipboard.writeText(text); }
+    catch(e){}
+  });
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+})();
+</script>
+</body>
+</html>
