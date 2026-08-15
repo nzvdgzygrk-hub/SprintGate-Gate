@@ -4,31 +4,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
   <meta name="theme-color" content="#061109" />
-  <title>FK SprintGate Ziel</title>
+  <title>FK SprintGate</title>
   <style>
-    :root{color-scheme:dark;--bg:#061109;--card:#0d1b11;--line:#34d058;--muted:#9aa7a0;--warn:#ffb020}
+    :root{color-scheme:dark;--bg:#061109;--card:#0d1b11;--line:#34d058;--muted:#9aa7a0;--warn:#ffb020;--red:#ff365e;--cyan:#00e5ff}
     *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#030805,var(--bg));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;color:#fff;min-height:100vh}
     main{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 28px)}
-    h1{font-size:28px;margin:6px 0 2px}.sub{color:var(--muted);margin:0 0 14px}.card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin:12px 0}.row{display:flex;gap:10px;align-items:center}.grow{flex:1}.statusDot{width:10px;height:10px;border-radius:99px;background:var(--warn)}
+    h1{font-size:28px;margin:6px 0 2px}.sub{color:var(--muted);margin:0 0 14px}.card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:14px;margin:12px 0}.row{display:flex;gap:10px;align-items:center}.statusDot{width:10px;height:10px;border-radius:99px;background:var(--warn);flex:none}
     button{appearance:none;border:0;border-radius:14px;padding:14px 16px;font-weight:800;font-size:16px;background:var(--line);color:#031006;width:100%}button.secondary{background:#17251b;color:#fff;border:1px solid rgba(255,255,255,.12)}button:disabled{opacity:.45}
-    .videoWrap{position:relative;overflow:hidden;border-radius:18px;background:#000;aspect-ratio:9/16;max-height:70vh;touch-action:none}video{width:100%;height:100%;object-fit:cover;display:block}.finishLine{position:absolute;top:0;bottom:0;width:3px;background:#ff365e;left:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 18px #ff365e}.finishTag{position:absolute;top:12px;transform:translateX(-50%);background:#ff365e;color:white;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:800;left:50%}.flashMarker{position:absolute;width:44px;height:44px;border:3px solid #ffe600;border-radius:50%;transform:translate(-50%,-50%);left:50%;top:18%;box-shadow:0 0 18px rgba(255,230,0,.5)}.flashMarker:after{content:"STARTLICHT";position:absolute;top:46px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;background:rgba(0,0,0,.65);padding:3px 5px;border-radius:5px;white-space:nowrap}
-    label{font-size:13px;color:var(--muted);display:block;margin:9px 0 4px}input[type=range]{width:100%}.big{font-size:62px;font-weight:900;letter-spacing:-2px;text-align:center;font-variant-numeric:tabular-nums}.resultMeta{text-align:center;color:var(--muted)}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(52,208,88,.13);color:#7df296;font-size:12px;font-weight:700}.warn{color:var(--warn);font-size:12px}.help{font-size:13px;color:var(--muted);line-height:1.45}.hidden{display:none!important}.debug{font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;color:#86938b;white-space:pre-wrap}canvas{display:none}
+    .videoWrap{position:relative;overflow:hidden;border-radius:18px;background:#000;aspect-ratio:9/16;max-height:70vh;touch-action:none}video{width:100%;height:100%;object-fit:cover;display:block}.gateLine{position:absolute;top:0;bottom:0;width:3px;background:var(--red);left:50%;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 18px var(--red)}.gateTag{position:absolute;top:12px;transform:translateX(-50%);background:var(--red);color:white;padding:5px 8px;border-radius:8px;font-size:11px;font-weight:800;left:50%}.flashMarker{position:absolute;width:44px;height:44px;border:3px solid #ffe600;border-radius:50%;transform:translate(-50%,-50%);left:50%;top:18%;box-shadow:0 0 18px rgba(255,230,0,.5)}.flashMarker:after{content:"STARTLICHT";position:absolute;top:46px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;background:rgba(0,0,0,.65);padding:3px 5px;border-radius:5px;white-space:nowrap}
+    label{font-size:13px;color:var(--muted);display:block;margin:9px 0 4px}input[type=range]{width:100%}.big{font-size:62px;font-weight:900;letter-spacing:-2px;text-align:center;font-variant-numeric:tabular-nums}.resultMeta{text-align:center;color:var(--muted)}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(52,208,88,.13);color:#7df296;font-size:12px;font-weight:700}.warn{color:var(--warn);font-size:12px}.help{font-size:13px;color:var(--muted);line-height:1.45}.hidden{display:none!important}.debug{font-family:ui-monospace,SFMono-Regular,monospace;font-size:11px;color:#86938b;white-space:pre-wrap}.syncGood{color:#7df296}.syncWarn{color:var(--warn)}canvas{display:none}
   </style>
 </head>
 <body>
 <main>
-  <div class="pill">Safari-Zielgerät · keine App</div>
+  <div class="pill" id="rolePill">Safari-Gate · keine App</div>
   <h1>FK SprintGate</h1>
-  <p class="sub" id="runMeta">Ziel-Gate vorbereiten</p>
+  <p class="sub" id="runMeta">Gate vorbereiten</p>
 
   <section class="card">
     <div class="row"><span class="statusDot" id="dot"></span><strong id="stateText">Kamera noch nicht gestartet</strong></div>
   </section>
 
+  <section class="card hidden" id="syncCard">
+    <div class="row"><span class="statusDot" id="syncDot"></span><strong>Zeitsynchronisation</strong></div>
+    <p class="help" id="syncText">Noch nicht synchronisiert.</p>
+    <button id="syncBtn" class="secondary">Jetzt synchronisieren</button>
+  </section>
+
   <section class="videoWrap" id="videoWrap">
     <video id="video" playsinline muted></video>
-    <div class="finishLine" id="finishLine"></div>
-    <div class="finishTag" id="finishTag">ZIEL</div>
+    <div class="gateLine" id="gateLine"></div>
+    <div class="gateTag" id="gateTag">ZIEL</div>
     <div class="flashMarker" id="flashMarker"></div>
   </section>
   <canvas id="canvas" width="320" height="180"></canvas>
@@ -36,21 +42,23 @@
   <section class="card" id="setupCard">
     <button id="cameraBtn">Kamera starten</button>
     <div id="controls" class="hidden">
-      <p class="help"><b>1.</b> Tippe im Kamerabild auf die Stelle, an der du das Start-iPhone bzw. dessen Taschenlampe siehst. Der gelbe Kreis muss dort sitzen.</p>
-      <label>Ziellinie verschieben</label>
-      <input id="finishSlider" type="range" min="10" max="90" value="50" step="1" />
+      <p class="help" id="instruction"></p>
+      <label id="lineLabel">Linie verschieben</label>
+      <input id="lineSlider" type="range" min="10" max="90" value="50" step="1" />
       <details>
         <summary>Empfindlichkeit</summary>
-        <label>Startlicht-Schwelle <span id="flashV">38</span></label>
-        <input id="flashSlider" type="range" min="12" max="90" value="38" step="1" />
-        <label>Zielbewegung <span id="motionV">12</span>%</label>
+        <div id="flashSettings">
+          <label>Startlicht-Schwelle <span id="flashV">38</span></label>
+          <input id="flashSlider" type="range" min="12" max="90" value="38" step="1" />
+        </div>
+        <label>Linienbewegung <span id="motionV">12</span>%</label>
         <input id="motionSlider" type="range" min="4" max="40" value="12" step="1" />
       </details>
       <div style="height:10px"></div>
-      <button id="armBtn">Ziel-Gate scharf schalten</button>
+      <button id="armBtn">Gate scharf schalten</button>
       <div style="height:8px"></div>
       <button id="resetBtn" class="secondary">Zurücksetzen</button>
-      <p class="warn">Prototyp: Noch nicht als zertifizierte Lichtschranke verwenden.</p>
+      <p class="warn">Prototyp: Genauigkeit vor Verkauf gegen eine echte Lichtschranke prüfen.</p>
     </div>
   </section>
 
@@ -65,7 +73,7 @@
   </section>
 
   <section class="card">
-    <div class="help"><b>Messprinzip:</b> Das Ziel-iPhone erkennt zuerst den Lichtimpuls des Start-iPhones und danach die Bewegung an der roten Ziellinie. Beide Zeitpunkte entstehen auf demselben Gerät – dadurch brauchen die beiden iPhones keine synchronisierten Uhren.</div>
+    <div class="help" id="principle"></div>
     <div class="debug" id="debug"></div>
   </section>
 </main>
@@ -75,20 +83,43 @@
   const $ = (id) => document.getElementById(id);
   const video = $('video'), canvas = $('canvas'), ctx = canvas.getContext('2d', { willReadFrequently:true });
   const dot = $('dot'), stateText = $('stateText'), controls = $('controls');
-  const finishLine = $('finishLine'), finishTag = $('finishTag'), flashMarker = $('flashMarker');
+  const gateLine = $('gateLine'), gateTag = $('gateTag'), flashMarker = $('flashMarker');
   const params = new URLSearchParams(location.search);
   const distance = Math.max(1, Number(params.get('d')) || 20);
   const player = (params.get('p') || '').slice(0,60);
+  const mode = params.get('sm') === 'camera' ? 'camera' : 'light';
+  const host = params.get('host') || '';
+  const port = Number(params.get('port')) || 8765;
+  const sid = params.get('sid') || '';
+  const cameraMode = mode === 'camera';
+
   $('runMeta').textContent = `${player ? player + ' · ' : ''}${distance} m`;
+  $('rolePill').textContent = cameraMode ? 'Safari-Startgerät · keine App' : 'Safari-Zielgerät · keine App';
+  $('gateTag').textContent = cameraMode ? 'START' : 'ZIEL';
+  $('lineLabel').textContent = cameraMode ? 'Startlinie verschieben' : 'Ziellinie verschieben';
+  $('armBtn').textContent = cameraMode ? 'Start-Gate scharf schalten' : 'Ziel-Gate scharf schalten';
+  $('instruction').innerHTML = cameraMode
+    ? '<b>1.</b> Zweites iPhone seitlich an der Startlinie aufstellen. Die rote START-Linie so verschieben, dass der Läufer sichtbar durch sie hindurchläuft. Danach synchronisieren und scharf schalten.'
+    : '<b>1.</b> Tippe im Kamerabild auf die Stelle, an der du das Start-iPhone bzw. dessen Taschenlampe siehst. Danach die rote ZIEL-Linie auf den tatsächlichen Durchgangspunkt setzen.';
+  $('principle').innerHTML = cameraMode
+    ? '<b>Kameramodus:</b> Dieses Safari-iPhone erkennt den Startdurchlauf auf einem Videoframe. Vorher wird seine monotone Browser-Uhr per lokalem Ping/Pong auf die monotone Uhr der Haupt-App abgebildet. Der bereits zeitgestempelte START wird anschließend an die App gesendet; die Netzwerkankunft selbst ist nicht der Startzeitpunkt.'
+    : '<b>Lichtmodus:</b> Dieses Ziel-iPhone erkennt zuerst den Lichtimpuls des Haupt-iPhones und danach die Bewegung an der roten Ziellinie. Beide Zeitpunkte entstehen auf derselben Browser-Zeitbasis.';
+
+  if (cameraMode) {
+    $('flashMarker').classList.add('hidden');
+    $('flashSettings').classList.add('hidden');
+    $('syncCard').classList.remove('hidden');
+  }
 
   let stream = null;
   let state = 'IDLE';
-  let flashX = .50, flashY = .18, finishX = .50;
+  let flashX = .50, flashY = .18, gateX = .50;
   let baselineSamples = [], baseline = 0;
   let startT = null, finishT = null;
   let previousGray = null, motionStreak = 0;
   let lastFlashLuma = 0, lastMotion = 0;
   let armedAt = 0;
+  let syncOffset = null, syncRTT = null, syncSpread = null, lastSyncAt = 0;
 
   const setState = (s, text, color='#ffb020') => {
     state = s; stateText.textContent = text; dot.style.background = color;
@@ -96,7 +127,7 @@
 
   function setMarker() {
     flashMarker.style.left = (flashX*100)+'%'; flashMarker.style.top = (flashY*100)+'%';
-    finishLine.style.left = (finishX*100)+'%'; finishTag.style.left = (finishX*100)+'%';
+    gateLine.style.left = (gateX*100)+'%'; gateTag.style.left = (gateX*100)+'%';
   }
   setMarker();
 
@@ -111,6 +142,7 @@
       $('cameraBtn').classList.add('hidden'); controls.classList.remove('hidden');
       setState('READY','Kamera bereit','#34d058');
       startFrameLoop();
+      if (cameraMode) syncClocks();
     } catch (e) {
       setState('ERROR','Kamera nicht verfügbar','#ff365e');
       alert('Kamerazugriff konnte nicht gestartet werden. Bitte Safari-Kameraberechtigung prüfen.');
@@ -118,21 +150,35 @@
   });
 
   $('videoWrap').addEventListener('pointerup', (ev) => {
+    if (cameraMode) return;
     const r = $('videoWrap').getBoundingClientRect();
     flashX = Math.min(.96, Math.max(.04, (ev.clientX-r.left)/r.width));
     flashY = Math.min(.96, Math.max(.04, (ev.clientY-r.top)/r.height));
     setMarker();
   });
 
-  $('finishSlider').addEventListener('input', e => { finishX = Number(e.target.value)/100; setMarker(); });
+  $('lineSlider').addEventListener('input', e => { gateX = Number(e.target.value)/100; setMarker(); });
   $('flashSlider').addEventListener('input', e => $('flashV').textContent = e.target.value);
   $('motionSlider').addEventListener('input', e => $('motionV').textContent = e.target.value);
+  $('syncBtn').addEventListener('click', syncClocks);
 
-  $('armBtn').addEventListener('click', () => {
+  $('armBtn').addEventListener('click', async () => {
     startT = finishT = null; motionStreak = 0; baselineSamples = []; previousGray = null;
+    $('resultCard').classList.add('hidden');
+
+    if (cameraMode) {
+      if (!syncOffset || performance.now() - lastSyncAt > 20000) {
+        const ok = await syncClocks();
+        if (!ok) return;
+      }
+      previousGray = null;
+      armedAt = performance.now();
+      setState('ARMED','SCHARF – warte auf Startdurchlauf','#34d058');
+      return;
+    }
+
     armedAt = performance.now();
     setState('CALIBRATING','Startlicht wird kalibriert…','#ffb020');
-    $('resultCard').classList.add('hidden');
     setTimeout(() => {
       baseline = baselineSamples.length ? baselineSamples.reduce((a,b)=>a+b,0)/baselineSamples.length : lastFlashLuma;
       setState('ARMED','SCHARF – warte auf Startlicht','#34d058');
@@ -146,43 +192,129 @@
   }
   $('resetBtn').addEventListener('click', reset); $('newBtn').addEventListener('click', reset);
 
-  function frame(now) {
+  async function localFetch(path, options={}) {
+    if (!host || !sid) throw new Error('Keine lokale App-Adresse im QR-Code');
+    const url = `http://${host}:${port}${path}${path.includes('?')?'&':'?'}sid=${encodeURIComponent(sid)}`;
+    try {
+      return await fetch(url, {...options, cache:'no-store', targetAddressSpace:'local'});
+    } catch (first) {
+      return await fetch(url, {...options, cache:'no-store'});
+    }
+  }
+
+  async function syncClocks() {
+    if (!cameraMode) return true;
+    if (!host || !sid) {
+      setSync(false, 'Keine lokale App-Adresse. QR-Code neu aus der SprintGate-App scannen.');
+      return false;
+    }
+    setSync(null, 'Synchronisiere …');
+    const samples=[];
+    for(let i=0;i<12;i++){
+      try{
+        const t0=performance.now();
+        const response=await localFetch(`/ping?n=${i}&x=${Date.now()}`);
+        const payload=await response.json();
+        const t3=performance.now();
+        if(!payload.ok) continue;
+        const t1=Number(payload.t1), t2=Number(payload.t2);
+        const rtt=(t3-t0)-(t2-t1);
+        const offset=((t1-t0)+(t2-t3))/2;
+        if(Number.isFinite(rtt)&&Number.isFinite(offset)&&rtt>=0) samples.push({rtt,offset});
+      }catch(e){}
+      await new Promise(r=>setTimeout(r,35));
+    }
+    if(samples.length<4){
+      setSync(false,'Synchronisation fehlgeschlagen. Beide iPhones ins gleiche WLAN/Hotspot und lokale Netzwerkfreigabe erlauben.');
+      return false;
+    }
+    samples.sort((a,b)=>a.rtt-b.rtt);
+    const best=samples.slice(0,Math.min(5,samples.length));
+    const offsets=best.map(s=>s.offset).sort((a,b)=>a-b);
+    syncOffset=offsets[Math.floor(offsets.length/2)];
+    syncRTT=best[0].rtt;
+    syncSpread=Math.max(...offsets)-Math.min(...offsets);
+    lastSyncAt=performance.now();
+    const good=syncRTT<=35 && syncSpread<=12;
+    setSync(good,`Synchronisiert · RTT ${syncRTT.toFixed(1)} ms · Streuung ${syncSpread.toFixed(1)} ms${good?'':' · Verbindung prüfen'}`);
+    try{ await localFetch(`/sync?rtt=${encodeURIComponent(syncRTT)}&spread=${encodeURIComponent(syncSpread)}&offset=${encodeURIComponent(syncOffset)}`,{method:'POST'}); }catch(e){}
+    return true;
+  }
+
+  function setSync(good,text){
+    $('syncText').textContent=text;
+    $('syncText').className='help '+(good===true?'syncGood':good===false?'syncWarn':'');
+    $('syncDot').style.background=good===true?'#34d058':good===false?'#ff365e':'#ffb020';
+  }
+
+  async function sendStart(frameTime){
+    if(!Number.isFinite(syncOffset)) return;
+    try{
+      await localFetch(`/start?t=${encodeURIComponent(frameTime)}&offset=${encodeURIComponent(syncOffset)}&rtt=${encodeURIComponent(syncRTT||0)}`,{method:'POST'});
+      setState('DONE','START erkannt und an Hauptgerät gesendet','#34d058');
+    }catch(e){
+      setState('ERROR','START erkannt – Übertragung fehlgeschlagen','#ff365e');
+    }
+  }
+
+  function frame(frameTime) {
     if (video.readyState >= 2) {
       const W=320, H=180; canvas.width=W; canvas.height=H;
       ctx.drawImage(video,0,0,W,H);
       const image = ctx.getImageData(0,0,W,H).data;
-      lastFlashLuma = regionLuma(image,W,H,flashX,flashY);
-      if (state === 'CALIBRATING') baselineSamples.push(lastFlashLuma);
 
-      if (state === 'ARMED' && now-armedAt > 1300) {
-        const threshold = Number($('flashSlider').value);
-        if (lastFlashLuma > baseline + threshold) {
-          startT = now;
-          previousGray = grayBand(image,W,H,finishX);
-          setState('RUNNING','START erkannt – warte auf Zieleinlauf','#00e5ff');
-          if (navigator.vibrate) navigator.vibrate(35);
-        }
-      } else if (state === 'RUNNING' && startT && now-startT > 350) {
-        const current = grayBand(image,W,H,finishX);
-        if (previousGray) {
-          lastMotion = motionRatio(previousGray,current);
-          const needed = Number($('motionSlider').value)/100;
-          motionStreak = lastMotion >= needed ? motionStreak+1 : 0;
-          if (motionStreak >= 2) {
-            finishT = now;
-            completeRun();
+      if (cameraMode) {
+        const current = grayBand(image,W,H,gateX,7);
+        if (state === 'ARMED' && frameTime-armedAt > 300) {
+          if (previousGray) {
+            lastMotion = motionRatio(previousGray,current);
+            const needed = Number($('motionSlider').value)/100;
+            motionStreak = lastMotion >= needed ? motionStreak+1 : 0;
+            if (motionStreak >= 2) {
+              startT = frameTime;
+              state='SENDING';
+              if (navigator.vibrate) navigator.vibrate(35);
+              sendStart(frameTime);
+            }
           }
         }
-        previousGray = current;
+        previousGray=current;
+        $('debug').textContent=`Startlinien-Bewegung ${(lastMotion*100).toFixed(1)}% · Sync ${syncRTT==null?'–':syncRTT.toFixed(1)+' ms'}`;
+      } else {
+        lastFlashLuma = regionLuma(image,W,H,flashX,flashY);
+        if (state === 'CALIBRATING') baselineSamples.push(lastFlashLuma);
+
+        if (state === 'ARMED' && frameTime-armedAt > 1300) {
+          const threshold = Number($('flashSlider').value);
+          if (lastFlashLuma > baseline + threshold) {
+            startT = frameTime;
+            previousGray = grayBand(image,W,H,gateX,4);
+            setState('RUNNING','START erkannt – warte auf Zieleinlauf','#00e5ff');
+            if (navigator.vibrate) navigator.vibrate(35);
+          }
+        } else if (state === 'RUNNING' && startT && frameTime-startT > 350) {
+          const current = grayBand(image,W,H,gateX,4);
+          if (previousGray) {
+            lastMotion = motionRatio(previousGray,current);
+            const needed = Number($('motionSlider').value)/100;
+            motionStreak = lastMotion >= needed ? motionStreak+1 : 0;
+            if (motionStreak >= 2) {
+              finishT = frameTime;
+              completeLightRun();
+            }
+          }
+          previousGray = current;
+        }
+        $('debug').textContent = `Licht ${lastFlashLuma.toFixed(1)} · Basis ${baseline.toFixed(1)} · Zielbewegung ${(lastMotion*100).toFixed(1)}%`;
       }
-      $('debug').textContent = `Licht ${lastFlashLuma.toFixed(1)} · Basis ${baseline.toFixed(1)} · Zielbewegung ${(lastMotion*100).toFixed(1)}%`;
     }
     scheduleFrame();
   }
 
   function scheduleFrame(){
-    if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) video.requestVideoFrameCallback((now)=>frame(now));
-    else requestAnimationFrame(frame);
+    if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
+      video.requestVideoFrameCallback((now,meta)=>frame((meta && Number.isFinite(meta.expectedDisplayTime)) ? meta.expectedDisplayTime : now));
+    } else requestAnimationFrame(frame);
   }
   function startFrameLoop(){ scheduleFrame(); }
 
@@ -196,8 +328,8 @@
     return n ? sum/n : 0;
   }
 
-  function grayBand(data,W,H,nx){
-    const cx=Math.round(nx*W), half=4; const arr=[];
+  function grayBand(data,W,H,nx,half=5){
+    const cx=Math.round(nx*W), arr=[];
     for(let y=8;y<H-8;y+=2){
       for(let x=Math.max(0,cx-half);x<Math.min(W,cx+half);x+=2){
         const i=(y*W+x)*4; arr.push((data[i]+data[i+1]+data[i+2])/3);
@@ -211,7 +343,7 @@
     return n ? changed/n : 0;
   }
 
-  function completeRun(){
+  function completeLightRun(){
     const seconds=(finishT-startT)/1000;
     if (!(seconds>0.2 && seconds<60)) { reset(); return; }
     const speed=(distance/seconds)*3.6;
