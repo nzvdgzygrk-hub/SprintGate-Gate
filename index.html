@@ -11,7 +11,7 @@
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 2px 10px}.brand{font-size:22px;font-weight:900}.role{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;background:rgba(52,208,88,.12);color:#7df296}.meta{color:var(--muted);font-size:13px;margin-top:3px}
 .statusGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.status{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 8px;text-align:center}.statusName{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:900}.statusValue{font-size:13px;font-weight:900;margin-top:5px;white-space:nowrap}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-right:5px}.ok .dot{background:var(--green)}.bad .dot{background:var(--red)}
 .videoWrap{position:relative;overflow:hidden;border-radius:20px;background:#000;aspect-ratio:9/16;max-height:66vh;border:1px solid var(--line)}video{width:100%;height:100%;object-fit:cover;display:block}.gateLine{position:absolute;top:0;bottom:0;width:30px;background:rgba(255,54,94,.20);border-left:3px solid var(--red);border-right:3px solid var(--red);left:50%;transform:translateX(-50%);box-shadow:0 0 18px rgba(255,54,94,.55)}.gateTag{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--red);padding:6px 10px;border-radius:9px;font-size:11px;font-weight:900;white-space:nowrap}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px}button{appearance:none;border:0;width:100%;border-radius:14px;padding:15px 14px;font-size:16px;font-weight:900;background:var(--green);color:#031006}button.secondary{background:#17231a;color:#fff;border:1px solid var(--line)}button.sync{margin-bottom:10px;background:#163b22;color:#8cffad;border:1px solid rgba(52,208,88,.35)}button:disabled{opacity:.45}.hidden{display:none!important}label{font-size:12px;color:var(--muted);display:block;margin:10px 0 4px}input[type=range]{width:100%}.hint{font-size:12px;color:var(--muted);line-height:1.4;margin:8px 2px 0}.tiny{font-size:10px;color:#9aa79f;font-family:ui-monospace,SFMono-Regular,monospace;margin-top:8px;overflow-wrap:anywhere}.warn{font-size:11px;color:var(--warn);margin-top:8px}.proto{font:11px ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#b5c1ba;max-height:210px;overflow:auto;background:#07100a;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:9px}details summary{font-weight:800;color:#d7e1da}canvas{display:none}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px}button{appearance:none;border:0;width:100%;border-radius:14px;padding:15px 14px;font-size:16px;font-weight:900;background:var(--green);color:#031006}button.secondary{background:#17231a;color:#fff;border:1px solid var(--line)}button.sync{margin-bottom:10px;background:#163b22;color:#8cffad;border:1px solid rgba(52,208,88,.35)}button:disabled{opacity:.45}.hidden{display:none!important}label{font-size:12px;color:var(--muted);display:block;margin:10px 0 4px}input[type=range]{width:100%}.hint{font-size:12px;color:var(--muted);line-height:1.4;margin:8px 2px 0}.tiny{font-size:10px;color:#9aa79f;font-family:ui-monospace,SFMono-Regular,monospace;margin-top:8px;overflow-wrap:anywhere}.warn{font-size:11px;color:var(--warn);margin-top:8px}.proto{font:11px ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#b5c1ba;max-height:230px;overflow:auto;background:#07100a;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:9px}details summary{font-weight:800;color:#d7e1da}canvas{display:none}
 </style>
 </head>
 <body><main>
@@ -23,166 +23,132 @@
 </div>
 <div class="panel">
 <button id="syncBtn" class="sync">SYNC ERNEUT VERSUCHEN</button>
-<div class="tiny" id="linkInfo">Lokale Verbindung wird vorbereitet …</div>
+<div class="tiny" id="linkInfo">HTTPS-Relay wird vorbereitet …</div>
 <details><summary>Diagnose-Protokoll</summary><pre class="proto" id="protocol"></pre><button id="copyProtocolBtn" class="secondary">PROTOKOLL KOPIEREN</button></details>
 </div>
 <div class="videoWrap"><video id="video" playsinline muted></video><div class="gateLine" id="gateLine"></div><div class="gateTag" id="gateTag">ZIEL-SCHRANKE</div></div><canvas id="canvas" width="320" height="180"></canvas>
-<div class="panel"><button id="cameraBtn">KAMERA STARTEN</button><div id="controls" class="hidden"><button id="armBtn">ZIEL SCHARF SCHALTEN</button><label>Ziel-Schranke verschieben</label><input id="lineSlider" type="range" min="10" max="90" value="50" step="1"/><details><summary>Feineinstellung</summary><label>Empfindlichkeit <span id="motionV">12</span>%</label><input id="motionSlider" type="range" min="4" max="40" value="12" step="1"/></details><div style="height:8px"></div><button id="resetBtn" class="secondary">NEUER LAUF</button><div class="hint">Dieses iPhone steht seitlich am Ziel. Nur die rote ZIEL-SCHRANKE zählt. Das START-iPhone muss nicht im Bild sein.</div><div class="tiny" id="diag"></div><div class="warn">Prototyp: Genauigkeit vor Verkauf gegen eine echte Lichtschranke validieren.</div></div></div>
+<div class="panel"><button id="cameraBtn">KAMERA STARTEN</button><div id="controls" class="hidden"><button id="armBtn">ZIEL SCHARF SCHALTEN</button><label>Ziel-Schranke verschieben</label><input id="lineSlider" type="range" min="10" max="90" value="50" step="1"/><details><summary>Feineinstellung</summary><label>Empfindlichkeit <span id="motionV">12</span>%</label><input id="motionSlider" type="range" min="4" max="40" value="12" step="1"/></details><div style="height:8px"></div><button id="resetBtn" class="secondary">NEUER LAUF</button><div class="hint">Dieses iPhone steht seitlich am Ziel. Nur die rote ZIEL-SCHRANKE zählt.</div><div class="tiny" id="diag"></div><div class="warn">Prototyp: Internet-Relay-Synchronisation vor Verkauf gegen eine echte Lichtschranke validieren.</div></div></div>
 </main>
 <script>
 (async()=>{
 'use strict';
-const $=id=>document.getElementById(id);
-const protocolLines=[];
-function stamp(){return new Date().toLocaleTimeString('de-DE',{hour12:false});}
-function log(message){protocolLines.push(`[${stamp()}] ${message}`);if(protocolLines.length>60)protocolLines.splice(0,protocolLines.length-60);$('protocol').textContent=protocolLines.join('\n');}
-
-if('serviceWorker'in navigator){
-  try{
-    const regs=await navigator.serviceWorker.getRegistrations();
-    if(regs.length){log(`${regs.length} alter Service Worker gefunden – wird entfernt`);await Promise.all(regs.map(r=>r.unregister()));log('Service Worker entfernt');}
-    else log('Kein Service Worker aktiv');
-  }catch(e){log(`Service-Worker-Prüfung FEHLER: ${e?.message||e}`);}
-}
+const $=id=>document.getElementById(id),protocolLines=[];
+const stamp=()=>new Date().toLocaleTimeString('de-DE',{hour12:false});
+function log(m){protocolLines.push(`[${stamp()}] ${m}`);if(protocolLines.length>80)protocolLines.splice(0,protocolLines.length-80);$('protocol').textContent=protocolLines.join('\n');}
+if('serviceWorker'in navigator){try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));}catch(e){}}
 
 const video=$('video'),canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
-const params=new URLSearchParams(location.search),distance=Math.max(1,Number(params.get('d'))||20),player=(params.get('p')||'').slice(0,60),mode=params.get('sm')==='camera'?'camera':'light';
-const host=params.get('host')||'',port=Number(params.get('port'))||8765,statusPort=Number(params.get('sport'))||8766,sid=params.get('sid')||'';
+const params=new URLSearchParams(location.search),distance=Math.max(1,Number(params.get('d'))||20),player=(params.get('p')||'').slice(0,60),mode=params.get('sm')==='camera'?'camera':'light',sid=params.get('sid')||'';
+const topic=sid?`fk-sg-${sid.toLowerCase()}`:'';
+const relayBase=topic?`https://ntfy.sh/${topic}`:'';
 $('runMeta').textContent=`${player?player+' · ':''}${distance} m · ${mode==='light'?'Licht-START':'Kamera-START'}`;
-$('linkInfo').textContent=host?`Ziel: http://${host}:${port} · Status-Port ${statusPort}`:'Keine lokale IP im QR-Code – QR neu aus der App scannen.';
-log(`Seite gestartet · Modus ${mode} · Distanz ${distance} m`);
-log(host?`QR-Ziel ${host}:${port} · Status ${statusPort} · Session ${sid||'FEHLT'}`:'FEHLER: keine lokale IP im QR-Code');
+$('linkInfo').textContent=topic?`HTTPS-Relay: ntfy.sh · Session ${sid}`:'Session fehlt – QR neu aus der App scannen.';
+log(`Seite gestartet · ${distance} m · ${mode}`);log(topic?`HTTPS-Session ${sid}`:'FEHLER: Session fehlt');
 
-let stream=null,state='IDLE',gateX=.5,motionStreak=0,lastMotion=0,armedAt=0,previousMotionFrame=null,approachSide=null,sideFrames=0,sideCandidate=null;
-let syncOffset=null,syncRTT=null,syncSpread=null,lastSyncAt=0,statusTimer=null,lastNetworkError='',syncInProgress=false,lastResyncToken=null;
+let cameraStream=null,state='IDLE',gateX=.5,motionStreak=0,lastMotion=0,armedAt=0,previousMotionFrame=null,approachSide=null,sideFrames=0,sideCandidate=null;
+let syncOffset=null,syncRTT=null,syncSpread=null,lastSyncAt=0,syncInProgress=false,eventSource=null,lastResyncToken=-1;
+const pendingPings=new Map();
 
 function paintStatus(id,value,text){const el=$(id);el.classList.remove('ok','bad');if(value===true)el.classList.add('ok');if(value===false)el.classList.add('bad');$(id==='syncStatus'?'syncValue':id==='startStatus'?'startValue':'goalValue').textContent=text;}
 function setMarker(){$('gateLine').style.left=(gateX*100)+'%';$('gateTag').style.left=(gateX*100)+'%';}setMarker();
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-async function rawFetch(url,options={}){
-  try{return await fetch(url,{...options,cache:'no-store',targetAddressSpace:'local'});}
-  catch(first){
-    lastNetworkError=first?.message||String(first);
-    try{return await fetch(url,{...options,cache:'no-store'});}
-    catch(second){lastNetworkError=second?.message||String(second);throw second;}
-  }
+async function publish(payload){
+ if(!relayBase)throw new Error('Session fehlt');
+ const r=await fetch(relayBase,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain;charset=UTF-8','Cache':'no'}});
+ if(!r.ok)throw new Error(`Relay HTTP ${r.status}`);
+ return r;
 }
-async function localFetch(path,options={}){
-  if(!host||!sid)throw new Error('QR-Code ohne lokale App-Adresse');
-  return rawFetch(`http://${host}:${port}${path}${path.includes('?')?'&':'?'}sid=${encodeURIComponent(sid)}`,options);
+
+function connectRelay(){
+ if(!topic)return;
+ if(eventSource)eventSource.close();
+ eventSource=new EventSource(`${relayBase}/sse`);
+ eventSource.onopen=()=>{log('HTTPS-Relay verbunden');publish({type:'hello',source:'web'}).catch(e=>log(`HELLO FEHLER: ${e.message}`));};
+ eventSource.onerror=()=>{log('HTTPS-Relay Stream unterbrochen – Safari verbindet automatisch neu');};
+ eventSource.onmessage=e=>{
+   try{
+     const outer=JSON.parse(e.data);if(outer.event!=='message'||!outer.message)return;
+     const msg=JSON.parse(outer.message);if(msg.source!=='app')return;
+     handleAppMessage(msg);
+   }catch(err){log(`Relay-Nachricht FEHLER: ${err.message}`);}
+ };
 }
-async function statusFetch(){
-  if(!host||!sid)return null;
-  try{
-    const r=await rawFetch(`http://${host}:${statusPort}/status?sid=${encodeURIComponent(sid)}&x=${Date.now()}`);
-    if(!r.ok)throw new Error(`Status HTTP ${r.status}`);
-    return await r.json();
-  }catch(e){return null;}
+
+function handleAppMessage(msg){
+ switch(msg.type){
+   case 'pong':{
+     const p=pendingPings.get(msg.id);if(!p)return;pendingPings.delete(msg.id);
+     const t3=performance.now(),t1=Number(msg.t1),t2=Number(msg.t2),rtt=(t3-p.t0)-(t2-t1),offset=((t1-p.t0)+(t2-t3))/2;
+     if(Number.isFinite(rtt)&&Number.isFinite(offset)&&rtt>=0)p.resolve({rtt,offset});else p.resolve(null);
+     break;
+   }
+   case 'start': paintStatus('startStatus',true,'ERKANNT');log('START von App empfangen');break;
+   case 'reset': paintStatus('startStatus',null,'WARTET');paintStatus('goalStatus',null,'WARTET');log('Neuer Lauf von App');break;
+   case 'state': paintStatus('startStatus',msg.started===true,msg.started===true?'ERKANNT':'WARTET');break;
+   case 'resync':{
+     const token=Number(msg.token||0);if(token!==lastResyncToken){lastResyncToken=token;log(`App fordert SYNC #${token}`);syncClocks('App-Button');}break;
+   }
+   case 'app_ready': log('SprintGate-App am HTTPS-Relay bereit');break;
+ }
+}
+
+async function onePing(i){
+ const id=`${Date.now().toString(36)}-${i}-${Math.random().toString(36).slice(2,7)}`,t0=performance.now();
+ const result=new Promise(resolve=>{const timer=setTimeout(()=>{pendingPings.delete(id);resolve(null);},3000);pendingPings.set(id,{t0,resolve:v=>{clearTimeout(timer);resolve(v);}});});
+ try{await publish({type:'ping',source:'web',id,t0});}catch(e){pendingPings.delete(id);log(`Ping ${i+1} SEND FEHLER: ${e.message}`);return null;}
+ return await result;
 }
 
 async function syncClocks(source='manuell'){
-  if(syncInProgress){log(`SYNC ${source}: bereits aktiv`);return false;}
-  if(!host||!sid){paintStatus('syncStatus',false,'KEIN LINK');$('diag').textContent='QR-Code neu aus der SprintGate-App scannen.';log('SYNC abgebrochen: IP oder Session fehlt');return false;}
-  syncInProgress=true;paintStatus('syncStatus',null,'SYNC…');$('syncBtn').disabled=true;$('syncBtn').textContent='SYNCHRONISIERE …';lastNetworkError='';
-  log(`SYNC gestartet (${source}) → http://${host}:${port}/ping`);
-  const samples=[];
-  for(let i=0;i<12;i++){
-    try{
-      const t0=performance.now(),response=await localFetch(`/ping?n=${i}&x=${Date.now()}`);
-      if(!response.ok)throw new Error(`Ping HTTP ${response.status}`);
-      const payload=await response.json(),t3=performance.now();
-      if(!payload.ok)continue;
-      const t1=Number(payload.t1),t2=Number(payload.t2),rtt=(t3-t0)-(t2-t1),offset=((t1-t0)+(t2-t3))/2;
-      if(Number.isFinite(rtt)&&Number.isFinite(offset)&&rtt>=0)samples.push({rtt,offset});
-    }catch(e){lastNetworkError=e?.message||String(e);}
-    await new Promise(r=>setTimeout(r,35));
-  }
-  syncInProgress=false;$('syncBtn').disabled=false;$('syncBtn').textContent='SYNC ERNEUT VERSUCHEN';
-  if(samples.length<4){
-    paintStatus('syncStatus',false,'FEHLER');
-    const text=lastNetworkError?`Lokale Verbindung: ${lastNetworkError}`:'Keine Antwort von der SprintGate-App.';
-    $('diag').textContent=text;log(`SYNC FEHLER: nur ${samples.length}/12 Ping-Antworten · ${text}`);return false;
-  }
-  samples.sort((a,b)=>a.rtt-b.rtt);const best=samples.slice(0,Math.min(5,samples.length)),offsets=best.map(s=>s.offset).sort((a,b)=>a-b);
-  syncOffset=offsets[Math.floor(offsets.length/2)];syncRTT=best[0].rtt;syncSpread=Math.max(...offsets)-Math.min(...offsets);lastSyncAt=performance.now();
-  const good=syncRTT<=35&&syncSpread<=12;paintStatus('syncStatus',good,good?'BEREIT':'PRÜFEN');
-  try{const r=await localFetch(`/sync?rtt=${encodeURIComponent(syncRTT)}&spread=${encodeURIComponent(syncSpread)}&offset=${encodeURIComponent(syncOffset)}`,{method:'POST'});log(`SYNC-Rückmeldung an App: HTTP ${r.status}`);}catch(e){log(`SYNC-Rückmeldung FEHLER: ${e?.message||e}`);}
-  $('diag').textContent=`RTT ${syncRTT.toFixed(1)} ms · Streuung ${syncSpread.toFixed(1)} ms`;
-  log(`SYNC ${good?'OK':'PRÜFEN'} · ${samples.length}/12 Antworten · RTT ${syncRTT.toFixed(1)} ms · Streuung ${syncSpread.toFixed(1)} ms`);
-  return true;
+ if(syncInProgress){log(`SYNC ${source}: bereits aktiv`);return false;}
+ if(!topic){paintStatus('syncStatus',false,'KEIN LINK');return false;}
+ syncInProgress=true;paintStatus('syncStatus',null,'SYNC…');$('syncBtn').disabled=true;$('syncBtn').textContent='SYNCHRONISIERE …';log(`SYNC gestartet (${source}) über HTTPS`);
+ const samples=[];
+ for(let i=0;i<6;i++){const s=await onePing(i);if(s)samples.push(s);await sleep(80);}
+ syncInProgress=false;$('syncBtn').disabled=false;$('syncBtn').textContent='SYNC ERNEUT VERSUCHEN';
+ if(samples.length<3){paintStatus('syncStatus',false,'FEHLER');$('diag').textContent=`HTTPS-SYNC: nur ${samples.length}/6 Antworten`;log(`SYNC FEHLER · ${samples.length}/6 Antworten`);publish({type:'sync_error',source:'web',message:`${samples.length}/6 Antworten`}).catch(()=>{});return false;}
+ samples.sort((a,b)=>a.rtt-b.rtt);const best=samples.slice(0,Math.min(4,samples.length)),offsets=best.map(s=>s.offset).sort((a,b)=>a-b);
+ syncOffset=offsets[Math.floor(offsets.length/2)];syncRTT=best[0].rtt;syncSpread=Math.max(...offsets)-Math.min(...offsets);lastSyncAt=performance.now();
+ const good=syncSpread<=60;paintStatus('syncStatus',good,good?'BEREIT':'PRÜFEN');$('diag').textContent=`HTTPS RTT ${syncRTT.toFixed(0)} ms · Streuung ${syncSpread.toFixed(1)} ms`;
+ log(`SYNC ${good?'BEREIT':'PRÜFEN'} · ${samples.length}/6 · RTT ${syncRTT.toFixed(0)} ms · Streuung ${syncSpread.toFixed(1)} ms`);
+ try{await publish({type:'sync',source:'web',rtt:syncRTT,spread:syncSpread,offset:syncOffset});}catch(e){log(`SYNC-Rückmeldung FEHLER: ${e.message}`);}
+ return true;
 }
 
 $('syncBtn').onclick=()=>syncClocks('Safari-Button');
-
-async function pollStart(){
-  const data=await statusFetch();
-  if(!data||!data.ok)return;
-  paintStatus('startStatus',data.started===true,data.started===true?'ERKANNT':'WARTET');
-  const token=Number(data.resync||0);
-  if(lastResyncToken===null){lastResyncToken=token;log(`Statuskontakt zur App OK · Resync #${token}`);return;}
-  if(token!==lastResyncToken){
-    log(`App fordert neuen SYNC an: #${lastResyncToken} → #${token}`);
-    lastResyncToken=token;
-    syncClocks('App-Button');
-  }
-}
-function beginStatusPolling(){if(statusTimer)clearInterval(statusTimer);pollStart();statusTimer=setInterval(pollStart,500);}
-beginStatusPolling();
+$('copyProtocolBtn').onclick=async()=>{const text=`FK SprintGate Safari\nSession: ${sid}\n${protocolLines.join('\n')}`;try{await navigator.clipboard.writeText(text);$('copyProtocolBtn').textContent='KOPIERT';setTimeout(()=>$('copyProtocolBtn').textContent='PROTOKOLL KOPIEREN',1200);}catch(e){log(`Kopieren FEHLER: ${e.message}`);}};
 
 $('cameraBtn').onclick=async()=>{
-  try{
-    log('Kamerastart angefordert');
-    stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:60,max:60}}});
-    video.srcObject=stream;await video.play();$('cameraBtn').classList.add('hidden');$('controls').classList.remove('hidden');startFrameLoop();log('Kamera läuft');beginStatusPolling();await syncClocks('Kamerastart');
-  }catch(e){paintStatus('syncStatus',false,'KAMERA?');log(`KAMERA FEHLER: ${e?.message||e}`);alert('Kamera konnte nicht gestartet werden. Safari-Kameraberechtigung prüfen.');}
+ try{log('Kamerastart');cameraStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:60,max:60}}});video.srcObject=cameraStream;await video.play();$('cameraBtn').classList.add('hidden');$('controls').classList.remove('hidden');startFrameLoop();log('Kamera läuft');await syncClocks('Kamerastart');}
+ catch(e){log(`KAMERA FEHLER: ${e.message}`);alert('Kamera konnte nicht gestartet werden. Safari-Kameraberechtigung prüfen.');}
 };
-$('lineSlider').oninput=e=>{gateX=Number(e.target.value)/100;setMarker();};
-$('motionSlider').oninput=e=>$('motionV').textContent=e.target.value;
+$('lineSlider').oninput=e=>{gateX=Number(e.target.value)/100;setMarker();};$('motionSlider').oninput=e=>$('motionV').textContent=e.target.value;
 
 $('armBtn').onclick=async()=>{
-  motionStreak=0;previousMotionFrame=null;approachSide=null;sideFrames=0;sideCandidate=null;paintStatus('goalStatus',null,'WARTET');
-  if(!Number.isFinite(syncOffset)||performance.now()-lastSyncAt>20000){const ok=await syncClocks('Scharfschalten');if(!ok){log('ZIEL nicht scharf: SYNC fehlt');return;}}
-  armedAt=performance.now();state='ARMED';$('armBtn').textContent='ZIEL IST SCHARF';$('armBtn').disabled=true;beginStatusPolling();log('ZIEL scharf');
+ motionStreak=0;previousMotionFrame=null;approachSide=null;sideFrames=0;sideCandidate=null;paintStatus('goalStatus',null,'WARTET');
+ if(!Number.isFinite(syncOffset)||performance.now()-lastSyncAt>30000){const ok=await syncClocks('Scharfschalten');if(!ok){log('ZIEL nicht scharf: SYNC fehlt');return;}}
+ armedAt=performance.now();state='ARMED';$('armBtn').textContent='ZIEL IST SCHARF';$('armBtn').disabled=true;log('ZIEL scharf');
 };
-$('resetBtn').onclick=()=>{state='READY';motionStreak=0;previousMotionFrame=null;approachSide=null;sideFrames=0;sideCandidate=null;paintStatus('startStatus',null,'WARTET');paintStatus('goalStatus',null,'WARTET');$('armBtn').textContent='ZIEL SCHARF SCHALTEN';$('armBtn').disabled=false;log('Neuer Lauf zurückgesetzt');syncClocks('Neuer Lauf');};
+$('resetBtn').onclick=()=>{state='READY';motionStreak=0;previousMotionFrame=null;approachSide=null;sideFrames=0;sideCandidate=null;paintStatus('startStatus',null,'WARTET');paintStatus('goalStatus',null,'WARTET');$('armBtn').textContent='ZIEL SCHARF SCHALTEN';$('armBtn').disabled=false;log('Neuer Lauf in Safari');};
 
 async function sendFinish(frameTime){
-  if(!Number.isFinite(syncOffset)){log('ZIEL erkannt, aber kein Sync-Offset');return;}
-  try{
-    const r=await localFetch(`/start?t=${encodeURIComponent(frameTime)}&offset=${encodeURIComponent(syncOffset)}&rtt=${encodeURIComponent(syncRTT||0)}`,{method:'POST'});
-    if(!r.ok)throw new Error(`Ziel HTTP ${r.status}`);
-    paintStatus('goalStatus',true,'ERFASST');state='DONE';$('armBtn').textContent='ZIEL ERFASST';log(`ZIEL erfasst und übertragen · Frame ${frameTime.toFixed(2)} ms`);if(navigator.vibrate)navigator.vibrate(40);
-  }catch(e){paintStatus('goalStatus',false,'SENDEN?');state='ERROR';log(`ZIEL SENDEN FEHLER: ${e?.message||e}`);}
+ if(!Number.isFinite(syncOffset)){log('ZIEL FEHLER: kein Sync-Offset');return;}
+ try{await publish({type:'finish',source:'web',browserT:frameTime,offset:syncOffset,rtt:syncRTT||0});paintStatus('goalStatus',true,'ERFASST');state='DONE';$('armBtn').textContent='ZIEL ERFASST';log(`ZIEL erfasst · Frame ${frameTime.toFixed(3)} ms`);if(navigator.vibrate)navigator.vibrate(40);}
+ catch(e){paintStatus('goalStatus',false,'SENDEN?');state='ERROR';log(`ZIEL SEND FEHLER: ${e.message}`);}
 }
 
 function frame(frameTime){
-  if(video.readyState>=2){
-    const W=320,H=180;canvas.width=W;canvas.height=H;ctx.drawImage(video,0,0,W,H);const image=ctx.getImageData(0,0,W,H).data,current=grayFrame(image,W,H);
-    if(state==='ARMED'&&frameTime-armedAt>300&&previousMotionFrame){
-      const info=motionInfo(previousMotionFrame,current,gateX);lastMotion=info.ratio;const needed=Number($('motionSlider').value)/100;
-      if(info.centroid!=null&&info.ratio>=needed*.35){
-        const side=info.centroid<gateX-.035?-1:info.centroid>gateX+.035?1:null;
-        if(approachSide==null&&side!=null){if(sideCandidate===side)sideFrames++;else{sideCandidate=side;sideFrames=1;}if(sideFrames>=2)approachSide=side;}
-        else if(approachSide===-1&&info.centroid>gateX+.012)motionStreak++;
-        else if(approachSide===1&&info.centroid<gateX-.012)motionStreak++;
-        else motionStreak=Math.max(0,motionStreak-1);
-        if(motionStreak>=2){state='SENDING';sendFinish(frameTime);}
-      }
-    }
-    previousMotionFrame=current;if(syncRTT!=null)$('diag').textContent=`RTT ${syncRTT.toFixed(1)} ms · Bewegung ${(lastMotion*100).toFixed(1)}%`;
-  }
-  scheduleFrame();
+ if(video.readyState>=2){const W=320,H=180;canvas.width=W;canvas.height=H;ctx.drawImage(video,0,0,W,H);const image=ctx.getImageData(0,0,W,H).data,current=grayFrame(image,W,H);
+ if(state==='ARMED'&&frameTime-armedAt>300&&previousMotionFrame){const info=motionInfo(previousMotionFrame,current,gateX);lastMotion=info.ratio;const needed=Number($('motionSlider').value)/100;if(info.centroid!=null&&info.ratio>=needed*.35){const side=info.centroid<gateX-.035?-1:info.centroid>gateX+.035?1:null;if(approachSide==null&&side!=null){if(sideCandidate===side)sideFrames++;else{sideCandidate=side;sideFrames=1;}if(sideFrames>=2)approachSide=side;}else if(approachSide===-1&&info.centroid>gateX+.012)motionStreak++;else if(approachSide===1&&info.centroid<gateX-.012)motionStreak++;else motionStreak=Math.max(0,motionStreak-1);if(motionStreak>=2){state='SENDING';sendFinish(frameTime);}}}
+ previousMotionFrame=current;if(syncRTT!=null)$('diag').textContent=`HTTPS RTT ${syncRTT.toFixed(0)} ms · Bewegung ${(lastMotion*100).toFixed(1)}%`;}
+ scheduleFrame();
 }
-function scheduleFrame(){if('requestVideoFrameCallback'in HTMLVideoElement.prototype)video.requestVideoFrameCallback((now,meta)=>frame(meta&&Number.isFinite(meta.expectedDisplayTime)?meta.expectedDisplayTime:now));else requestAnimationFrame(frame);}
-function startFrameLoop(){scheduleFrame();}
+function scheduleFrame(){if('requestVideoFrameCallback'in HTMLVideoElement.prototype)video.requestVideoFrameCallback((now,meta)=>frame(meta&&Number.isFinite(meta.expectedDisplayTime)?meta.expectedDisplayTime:now));else requestAnimationFrame(frame);}function startFrameLoop(){scheduleFrame();}
 function grayFrame(data,W,H){const arr=[];for(let y=8;y<H-8;y+=4)for(let x=0;x<W;x+=4){const i=(y*W+x)*4;arr.push({x:x/W,v:(data[i]+data[i+1]+data[i+2])/3});}return arr;}
 function motionInfo(a,b,gx){const n=Math.min(a.length,b.length);let changed=0,total=0,sumX=0;for(let i=0;i<n;i++){const x=b[i].x;if(x<gx-.25||x>gx+.25)continue;total++;if(Math.abs(a[i].v-b[i].v)>24){changed++;sumX+=x;}}return{ratio:total?changed/total:0,centroid:changed?sumX/changed:null};}
 
-$('copyProtocolBtn').onclick=async()=>{
-  const report=`FK SprintGate Safari Diagnose\n${$('linkInfo').textContent}\n${protocolLines.join('\n')}`;
-  try{await navigator.clipboard.writeText(report);$('copyProtocolBtn').textContent='KOPIERT';log('Protokoll in Zwischenablage kopiert');}
-  catch(e){const ta=document.createElement('textarea');ta.value=report;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();$('copyProtocolBtn').textContent='KOPIERT';}
-  setTimeout(()=>$('copyProtocolBtn').textContent='PROTOKOLL KOPIEREN',1600);
-};
+connectRelay();
 })();
-</script></body></html>
+</script>
+</body></html>
