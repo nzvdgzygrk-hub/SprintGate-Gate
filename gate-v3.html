@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#061109" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>FK SprintGate · Ziel</title>
+<style>
+:root{color-scheme:dark;--bg:#061109;--card:#0c1710;--line:rgba(255,255,255,.10);--green:#34d058;--muted:#95a29a;--warn:#ffb020;--red:#ff365e}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#020604,var(--bg));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;color:#fff;min-height:100vh}main{max-width:720px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 22px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 2px 10px}.brand{font-size:22px;font-weight:900}.role{font-size:12px;font-weight:800;padding:6px 10px;border-radius:999px;background:rgba(52,208,88,.12);color:#7df296}.meta{color:var(--muted);font-size:13px;margin-top:3px}
+.statusGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.status{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 8px;text-align:center}.statusName{font-size:10px;letter-spacing:.08em;color:var(--muted);font-weight:900}.statusValue{font-size:13px;font-weight:900;margin-top:5px;white-space:nowrap}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-right:5px}.ok .dot{background:var(--green)}.bad .dot{background:var(--red)}
+.videoWrap{position:relative;overflow:hidden;border-radius:20px;background:#000;aspect-ratio:9/16;max-height:66vh;border:1px solid var(--line)}video{width:100%;height:100%;object-fit:cover;display:block}.gateLine{position:absolute;top:0;bottom:0;width:30px;background:rgba(255,54,94,.20);border-left:3px solid var(--red);border-right:3px solid var(--red);left:50%;transform:translateX(-50%);box-shadow:0 0 18px rgba(255,54,94,.55)}.gateTag{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--red);padding:6px 10px;border-radius:9px;font-size:11px;font-weight:900;white-space:nowrap}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px}button{appearance:none;border:0;width:100%;border-radius:14px;padding:15px 14px;font-size:16px;font-weight:900;background:var(--green);color:#031006}button.secondary{background:#17231a;color:#fff;border:1px solid var(--line)}button.sync{margin-top:10px;background:#163b22;color:#8cffad;border:1px solid rgba(52,208,88,.35)}button:disabled{opacity:.42}.hidden{display:none!important}label{font-size:12px;color:var(--muted);display:block;margin:10px 0 4px}input[type=range]{width:100%}.hint{font-size:12px;color:var(--muted);line-height:1.45;margin:8px 2px 0}.tiny{font-size:10px;color:#9aa79f;font-family:ui-monospace,SFMono-Regular,monospace;margin-top:8px;overflow-wrap:anywhere}.warn{font-size:11px;color:var(--warn);margin-top:8px}.proto{font:11px ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#b5c1ba;max-height:230px;overflow:auto;background:#07100a;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:9px}details summary{font-weight:800;color:#d7e1da}canvas{display:none}
+</style>
+</head>
+<body><main>
+<div class="top"><div><div class="brand">FK SprintGate</div><div class="meta" id="runMeta">Zielgerät</div></div><div class="role">SAFARI · ZIEL</div></div>
+<div class="statusGrid">
+<div class="status" id="syncStatus"><div class="statusName">SYNC</div><div class="statusValue"><span class="dot"></span><span id="syncValue">WARTET</span></div></div>
+<div class="status" id="startStatus"><div class="statusName">START</div><div class="statusValue"><span class="dot"></span><span id="startValue">WARTET</span></div></div>
+<div class="status" id="goalStatus"><div class="statusName">ZIEL</div><div class="statusValue"><span class="dot"></span><span id="goalValue">WARTET</span></div></div>
+</div>
+<div class="panel">
+<div class="tiny" id="linkInfo">WSS wird vorbereitet …</div>
+<div class="hint"><b>Einmal Kamera starten.</b> Danach kommen neuer Lauf, Auto-SYNC, START und Abbruch automatisch aus der App.</div>
+<button id="syncBtn" class="sync" disabled>SYNC MANUELL · NOTFALL</button>
+<details><summary>Diagnose-Protokoll</summary><pre class="proto" id="protocol"></pre><button id="copyProtocolBtn" class="secondary">PROTOKOLL KOPIEREN</button></details>
+</div>
+<div class="videoWrap"><video id="video" playsinline muted></video><div class="gateLine" id="gateLine"></div><div class="gateTag" id="gateTag">ZIEL-SCHRANKE</div></div><canvas id="canvas" width="320" height="180"></canvas>
+<div class="panel">
+<button id="cameraBtn">KAMERA STARTEN</button>
+<div id="controls" class="hidden">
+<div class="hint" id="runHint">Kamera bereit machen. Danach in der App „NEUER LAUF“ wählen.</div>
+<label>Ziel-Schranke verschieben</label><input id="lineSlider" type="range" min="10" max="90" value="50" step="1"/>
+<details><summary>Feineinstellung</summary><label>Empfindlichkeit <span id="motionV">12</span>%</label><input id="motionSlider" type="range" min="4" max="40" value="12" step="1"/></details>
+<div class="tiny" id="diag"></div>
+<div class="warn">Gate v3 · WSS/MQTT · keine ntfy-HTTP-Pings · Prototyp</div>
+</div>
+</div>
+</main>
+<script>
+(async()=>{
+'use strict';
+const $=id=>document.getElementById(id),protocolLines=[];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const stamp=()=>new Date().toLocaleTimeString('de-DE',{hour12:false});
+function log(m){protocolLines.push(`[${stamp()}] ${m}`);if(protocolLines.length>120)protocolLines.splice(0,protocolLines.length-120);$('protocol').textContent=protocolLines.join('\n');}
+if('serviceWorker'in navigator){try{const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()));log(`Service Worker bereinigt: ${regs.length}`);}catch(e){log(`SW-Bereinigung: ${e.message}`);}}
+
+const params=new URLSearchParams(location.search);
+const distance=Math.max(1,Number(params.get('d'))||20),player=(params.get('p')||'').slice(0,60),mode=params.get('sm')==='camera'?'camera':'light',sid=params.get('sid')||'';
+const topicBase=sid?`fk/sprintgate/${sid.toLowerCase()}`:'',publishTopic=topicBase?`${topicBase}/web`:'',subscribeTopic=topicBase?`${topicBase}/app`:'';
+const BROKER='wss://broker.emqx.io:8084/mqtt';
+$('runMeta').textContent=`${player?player+' · ':''}${distance} m · ${mode==='light'?'Licht-START':'Kamera-START'}`;
+$('linkInfo').textContent=sid?`WSS/MQTT · Gate v3 · Session ${sid}`:'Session fehlt – QR neu aus der App scannen.';
+log(`Gate v3 gestartet · ${distance} m · ${mode}`);
+
+const video=$('video'),canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+let cameraStream=null,state='IDLE',currentRunID=0,runActive=false,startReceived=false,targetArmed=false;
+let gateX=.5,motionStreak=0,lastMotion=0,armedAt=0,previousMotionFrame=null,approachSide=null,sideFrames=0,sideCandidate=null;
+let syncOffset=null,syncRTT=null,syncSpread=null,lastSyncAt=0,syncInProgress=false,syncReady=false,lastResyncToken=-1,autoRetryTimer=null;
+const pendingPings=new Map();
+
+let ws=null,mqttReady=false,mqttSubscribed=false,mqttPacketID=1,reconnectTimer=null,lastAppSeen=0;
+
+function paintStatus(id,value,text){const el=$(id);el.classList.remove('ok','bad');if(value===true)el.classList.add('ok');if(value===false)el.classList.add('bad');$(id==='syncStatus'?'syncValue':id==='startStatus'?'startValue':'goalValue').textContent=text;}
+function setMarker(){$('gateLine').style.left=(gateX*100)+'%';$('gateTag').style.left=(gateX*100)+'%';}setMarker();
+function resetMotion(){motionStreak=0;lastMotion=0;previousMotionFrame=null;approachSide=null;sideFrames=0;sideCandidate=null;targetArmed=false;}
+function updateManualSyncButton(){$('syncBtn').disabled=!mqttReady||!runActive||startReceived||syncInProgress;}
+function concatBytes(...arrays){const total=arrays.reduce((n,a)=>n+a.length,0),out=new Uint8Array(total);let p=0;for(const a of arrays){out.set(a,p);p+=a.length;}return out;}
+function utf8(s){return new TextEncoder().encode(s);}
+function mqttString(s){const b=utf8(s);return concatBytes(new Uint8Array([(b.length>>8)&255,b.length&255]),b);}
+function remainingLength(n){const out=[];do{let d=n%128;n=Math.floor(n/128);if(n>0)d|=128;out.push(d);}while(n>0);return new Uint8Array(out);}
+function mqttPacket(header,body){return concatBytes(new Uint8Array([header]),remainingLength(body.length),body);}
+function connectPacket(){const variable=concatBytes(mqttString('MQTT'),new Uint8Array([4,2,0,30]));const id=`fkweb-${sid.toLowerCase().slice(0,12)}-${Math.random().toString(36).slice(2,7)}`;return mqttPacket(0x10,concatBytes(variable,mqttString(id)));}
+function subscribePacket(topic){mqttPacketID=(mqttPacketID%65535)+1;const body=concatBytes(new Uint8Array([(mqttPacketID>>8)&255,mqttPacketID&255]),mqttString(topic),new Uint8Array([0]));return mqttPacket(0x82,body);}
+function publishPacket(topic,payload){return mqttPacket(0x30,concatBytes(mqttString(topic),payload));}
+function decodeRemaining(bytes,start){let multiplier=1,value=0,i=start,count=0;while(i<bytes.length&&count<4){const d=bytes[i++];value+=(d&127)*multiplier;count++;if((d&128)===0)return{length:value,next:i};multiplier*=128;}return null;}
+function parsePublish(payload){if(payload.length<2)return null;const len=(payload[0]<<8)|payload[1];if(payload.length<2+len)return null;const topic=new TextDecoder().decode(payload.slice(2,2+len));return{topic,payload:payload.slice(2+len)};}
+function sendPacket(packet){if(!ws||ws.readyState!==WebSocket.OPEN)throw new Error('WSS nicht verbunden');ws.send(packet);}
+function mqttPublish(obj){if(!mqttReady)throw new Error('MQTT noch nicht bereit');sendPacket(publishPacket(publishTopic,utf8(JSON.stringify(obj))));}
+
+function connectMQTT(){
+ if(!sid)return;
+ if(ws&&(ws.readyState===WebSocket.OPEN||ws.readyState===WebSocket.CONNECTING))return;
+ clearTimeout(reconnectTimer);mqttReady=false;mqttSubscribed=false;updateManualSyncButton();
+ $('linkInfo').textContent=`WSS verbindet · Gate v3 · Session ${sid}`;
+ try{ws=new WebSocket(BROKER,['mqtt']);}catch(e){log(`WSS START FEHLER: ${e.message}`);reconnectTimer=setTimeout(connectMQTT,1800);return;}
+ ws.binaryType='arraybuffer';
+ ws.onopen=()=>{log('WSS Socket offen · MQTT CONNECT');try{sendPacket(connectPacket());}catch(e){log(`MQTT CONNECT FEHLER: ${e.message}`);}};
+ ws.onmessage=e=>{const data=e.data instanceof ArrayBuffer?new Uint8Array(e.data):utf8(String(e.data));handleMQTTData(data);};
+ ws.onerror=()=>log('WSS Fehler · Neuverbindung folgt');
+ ws.onclose=()=>{
+   const wasReady=mqttReady;mqttReady=false;mqttSubscribed=false;updateManualSyncButton();
+   if(wasReady)log('WSS getrennt · automatische Neuverbindung');
+   $('linkInfo').textContent=`WSS getrennt · verbindet neu · Session ${sid}`;
+   if(runActive&&!startReceived){syncReady=false;targetArmed=false;paintStatus('syncStatus',false,'VERB.?');paintStatus('goalStatus',false,'VERB.?');}
+   clearTimeout(reconnectTimer);reconnectTimer=setTimeout(connectMQTT,1800);
+ };
+}
+
+function handleMQTTData(bytes){
+ let index=0;
+ while(index<bytes.length){
+   const header=bytes[index++],decoded=decodeRemaining(bytes,index);if(!decoded)return;index=decoded.next;const end=index+decoded.length;if(end>bytes.length)return;const payload=bytes.slice(index,end);index=end;
+   switch(header>>4){
+     case 2:
+       if(payload.length<2||payload[1]!==0){log('MQTT CONNACK abgelehnt');try{ws.close();}catch{};break;}
+       log('WSS/MQTT verbunden');try{sendPacket(subscribePacket(subscribeTopic));}catch(e){log(`SUBSCRIBE FEHLER: ${e.message}`);}break;
+     case 3:{
+       const p=parsePublish(payload);if(!p||p.topic!==subscribeTopic)break;lastAppSeen=Date.now();
+       try{const msg=JSON.parse(new TextDecoder().decode(p.payload));if(msg.source==='app')handleAppMessage(msg);}catch(e){log(`MQTT Nachricht FEHLER: ${e.message}`);}break;
+     }
+     case 9:
+       mqttSubscribed=true;mqttReady=true;lastAppSeen=Date.now();$('linkInfo').textContent=`WSS/MQTT verbunden · Gate v3 · Session ${sid}`;log('MQTT Session abonniert');updateManualSyncButton();
+       try{mqttPublish({type:'hello',source:'web',session:sid});}catch(e){log(`HELLO FEHLER: ${e.message}`);}break;
+     case 13: break;
+   }
+ }
+}
+
+function handleAppMessage(msg){
+ switch(msg.type){
+   case 'app_ready': break;
+   case 'app_alive': break;
+   case 'pong':{
+     const p=pendingPings.get(msg.id);if(!p)return;pendingPings.delete(msg.id);const t3=performance.now(),t1=Number(msg.t1),t2=Number(msg.t2),rtt=(t3-p.t0)-(t2-t1),offset=((t1-p.t0)+(t2-t3))/2;
+     p.resolve(Number.isFinite(rtt)&&Number.isFinite(offset)&&rtt>=0?{rtt,offset}:null);break;
+   }
+   case 'run_new':{const run=Number(msg.run||0);if(run>0)prepareRemoteRun(run,'App');break;}
+   case 'start':{const run=Number(msg.run||0);if(run!==currentRunID||!runActive)return;startReceived=true;paintStatus('startStatus',true,'ERKANNT');$('runHint').textContent=`Lauf #${run} läuft · warte auf ZIEL.`;log(`START Lauf #${run}`);updateManualSyncButton();break;}
+   case 'abort':{const run=Number(msg.run||0);if(run===currentRunID||currentRunID===0)abortRemoteRun(run);break;}
+   case 'resync':{const run=Number(msg.run||0),token=Number(msg.token||0);if(run===currentRunID&&runActive&&!startReceived&&token!==lastResyncToken){lastResyncToken=token;syncClocks('App-Button').then(ok=>{if(ok)armForRun();});}break;}
+   case 'state':{
+     const run=Number(msg.run||0),active=msg.active===true,started=msg.started===true,aborted=msg.aborted===true;if(run<=0)return;
+     if(aborted){if(run===currentRunID||currentRunID===0)abortRemoteRun(run);return;}
+     if(active&&run!==currentRunID){if(started){currentRunID=run;runActive=true;startReceived=true;syncReady=false;targetArmed=false;paintStatus('syncStatus',false,'NEUER LAUF');paintStatus('startStatus',true,'LÄUFT');paintStatus('goalStatus',false,'NICHT BEREIT');$('runHint').textContent='Safari wurde während eines laufenden Laufs neu verbunden. In der App Lauf abbrechen und NEUER LAUF wählen.';log(`Lauf #${run} war beim Verbinden bereits gestartet`);}else prepareRemoteRun(run,'Status');return;}
+     if(run===currentRunID&&active&&!started&&!syncReady&&!syncInProgress){syncClocks('Reconnect').then(ok=>{if(ok)armForRun();});}
+     if(run===currentRunID&&active&&started&&!startReceived){startReceived=true;paintStatus('startStatus',true,'ERKANNT');$('runHint').textContent=`Lauf #${run} läuft · warte auf ZIEL.`;}
+     break;
+   }
+ }
+}
+
+async function prepareRemoteRun(run,source){
+ clearTimeout(autoRetryTimer);currentRunID=run;runActive=true;startReceived=false;syncReady=false;syncOffset=null;syncRTT=null;syncSpread=null;lastSyncAt=0;state='WAIT_SYNC';resetMotion();
+ paintStatus('syncStatus',null,'AUTO…');paintStatus('startStatus',null,'WARTET');paintStatus('goalStatus',null,cameraStream?'SYNC…':'KAMERA?');$('runHint').textContent=`Lauf #${run}: Auto-SYNC läuft …`;updateManualSyncButton();log(`Neuer Lauf #${run} von ${source}`);
+ if(!mqttReady){$('runHint').textContent=`Lauf #${run}: WSS verbindet …`;return;}
+ const ok=await syncClocks('Neuer Lauf');if(ok)await armForRun();else scheduleAutoRetry();
+}
+function abortRemoteRun(run){clearTimeout(autoRetryTimer);currentRunID=run;runActive=false;startReceived=false;syncReady=false;syncOffset=null;state='ABORTED';resetMotion();paintStatus('syncStatus',false,'ABBRUCH');paintStatus('startStatus',false,'ABBRUCH');paintStatus('goalStatus',false,'ABBRUCH');$('runHint').textContent=`Lauf #${run} abgebrochen. Warte auf NEUER LAUF.`;updateManualSyncButton();log(`Lauf #${run} abgebrochen`);}
+function scheduleAutoRetry(){clearTimeout(autoRetryTimer);if(!runActive||startReceived)return;autoRetryTimer=setTimeout(async()=>{if(!runActive||startReceived||syncReady||syncInProgress)return;const ok=await syncClocks('Auto-Wiederholung');if(ok)await armForRun();else scheduleAutoRetry();},3500);}
+
+async function onePing(i){
+ if(!mqttReady)return null;const id=`${Date.now().toString(36)}-${i}-${Math.random().toString(36).slice(2,7)}`,t0=performance.now();
+ const result=new Promise(resolve=>{const timer=setTimeout(()=>{pendingPings.delete(id);resolve(null);},2800);pendingPings.set(id,{t0,resolve:v=>{clearTimeout(timer);resolve(v);}});});
+ try{mqttPublish({type:'ping',source:'web',id,t0,run:currentRunID});}catch(e){pendingPings.delete(id);log(`Ping ${i+1}: ${e.message}`);return null;}return await result;
+}
+async function syncClocks(source='Automatisch'){
+ if(syncInProgress||!mqttReady||!runActive||currentRunID<=0||startReceived)return false;
+ syncInProgress=true;syncReady=false;targetArmed=false;paintStatus('syncStatus',null,'AUTO…');paintStatus('goalStatus',null,'SYNC…');$('syncBtn').textContent='SYNCHRONISIERE …';updateManualSyncButton();const runAtStart=currentRunID,samples=[];log(`SYNC #${runAtStart} (${source}) · WSS 8 Pings`);
+ for(let i=0;i<8;i++){if(runAtStart!==currentRunID||!runActive||startReceived||!mqttReady)break;const s=await onePing(i);if(s)samples.push(s);if(i<7)await sleep(150);}
+ syncInProgress=false;$('syncBtn').textContent='SYNC MANUELL · NOTFALL';updateManualSyncButton();if(runAtStart!==currentRunID||!runActive||startReceived)return false;
+ if(samples.length<5){syncReady=false;paintStatus('syncStatus',false,'FEHLER');paintStatus('goalStatus',false,'SYNC FEHLT');$('diag').textContent=`WSS-SYNC: ${samples.length}/8 Antworten`;log(`SYNC FEHLER · ${samples.length}/8`);try{mqttPublish({type:'sync_error',source:'web',run:currentRunID,message:`${samples.length}/8 Antworten`});}catch{}return false;}
+ samples.sort((a,b)=>a.rtt-b.rtt);const best=samples.slice(0,4),offsets=best.map(s=>s.offset).sort((a,b)=>a-b);syncOffset=(offsets[1]+offsets[2])/2;syncRTT=best[0].rtt;syncSpread=Math.max(...offsets)-Math.min(...offsets);lastSyncAt=performance.now();const good=syncSpread<=80&&syncRTT<=1500;syncReady=good;paintStatus('syncStatus',good,good?'BEREIT':'PRÜFEN');$('diag').textContent=`WSS RTT ${syncRTT.toFixed(0)} ms · Streuung ${syncSpread.toFixed(1)} ms`;log(`SYNC ${good?'BEREIT':'NICHT AUSREICHEND'} · ${samples.length}/8 · RTT ${syncRTT.toFixed(0)} ms · Streuung ${syncSpread.toFixed(1)} ms`);
+ try{mqttPublish({type:'sync',source:'web',run:currentRunID,good,rtt:syncRTT,spread:syncSpread,offset:syncOffset});}catch(e){syncReady=false;log(`SYNC-Rückmeldung FEHLER: ${e.message}`);return false;}if(!good){paintStatus('goalStatus',false,'SYNC FEHLT');return false;}return true;
+}
+async function armForRun(){
+ if(!runActive||currentRunID<=0||!syncReady||startReceived||!mqttReady)return false;
+ if(!cameraStream){paintStatus('goalStatus',false,'KAMERA?');$('runHint').textContent=`Lauf #${currentRunID}: SYNC OK – bitte Kamera einmal starten.`;return false;}
+ resetMotion();armedAt=performance.now();state='ARMED';targetArmed=true;paintStatus('goalStatus',true,'SCHARF');$('runHint').textContent=`Lauf #${currentRunID}: ZIEL automatisch scharf. START erfolgt in der App.`;log(`ZIEL Lauf #${currentRunID} automatisch scharf`);
+ try{mqttPublish({type:'web_armed',source:'web',run:currentRunID});}catch(e){targetArmed=false;paintStatus('goalStatus',false,'WSS?');log(`ZIEL-BEREIT FEHLER: ${e.message}`);return false;}return true;
+}
+
+$('syncBtn').onclick=async()=>{const ok=await syncClocks('Safari-Notfallbutton');if(ok)await armForRun();else scheduleAutoRetry();};
+$('copyProtocolBtn').onclick=async()=>{const text=`FK SprintGate Safari Gate v3\nSession: ${sid}\nLauf: ${currentRunID}\n${protocolLines.join('\n')}`;try{await navigator.clipboard.writeText(text);$('copyProtocolBtn').textContent='KOPIERT';setTimeout(()=>$('copyProtocolBtn').textContent='PROTOKOLL KOPIEREN',1200);}catch(e){log(`Kopieren FEHLER: ${e.message}`);}};
+$('cameraBtn').onclick=async()=>{try{log('Kamerastart');cameraStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:60,max:60}}});video.srcObject=cameraStream;await video.play();$('cameraBtn').classList.add('hidden');$('controls').classList.remove('hidden');startFrameLoop();log('Kamera läuft');if(runActive&&!startReceived){if(!syncReady){const ok=await syncClocks('Kamerastart');if(ok)await armForRun();else scheduleAutoRetry();}else await armForRun();}else $('runHint').textContent='Kamera bereit. Warte auf NEUER LAUF in der App.';}catch(e){log(`KAMERA FEHLER: ${e.message}`);alert('Kamera konnte nicht gestartet werden. Safari-Kameraberechtigung prüfen.');}};
+$('lineSlider').oninput=e=>{gateX=Number(e.target.value)/100;setMarker();};$('motionSlider').oninput=e=>$('motionV').textContent=e.target.value;
+
+async function sendFinish(frameTime){
+ if(!runActive||!startReceived||!targetArmed||!syncReady||!Number.isFinite(syncOffset)||!mqttReady){log('ZIEL verworfen: Lauf/START/SYNC/WSS nicht gültig');return;}
+ const run=currentRunID;try{mqttPublish({type:'finish',source:'web',run,browserT:frameTime,offset:syncOffset,rtt:syncRTT||0});paintStatus('goalStatus',true,'ERFASST');state='DONE';runActive=false;targetArmed=false;$('runHint').textContent=`Lauf #${run}: ZIEL erfasst. Neuen Lauf nur in der App wählen.`;log(`ZIEL Lauf #${run} erfasst · Frame ${frameTime.toFixed(3)} ms`);updateManualSyncButton();if(navigator.vibrate)navigator.vibrate(40);}catch(e){paintStatus('goalStatus',false,'SENDEN?');state='ERROR';log(`ZIEL SEND FEHLER: ${e.message}`);}
+}
+function frame(frameTime){
+ if(video.readyState>=2){const W=320,H=180;canvas.width=W;canvas.height=H;ctx.drawImage(video,0,0,W,H);const image=ctx.getImageData(0,0,W,H).data,current=grayFrame(image,W,H);
+   if(state==='ARMED'&&targetArmed&&runActive&&startReceived&&frameTime-armedAt>300&&previousMotionFrame){const info=motionInfo(previousMotionFrame,current,gateX);lastMotion=info.ratio;const needed=Number($('motionSlider').value)/100;if(info.centroid!=null&&info.ratio>=needed*.35){const side=info.centroid<gateX-.035?-1:info.centroid>gateX+.035?1:null;if(approachSide==null&&side!=null){if(sideCandidate===side)sideFrames++;else{sideCandidate=side;sideFrames=1;}if(sideFrames>=2)approachSide=side;}else if(approachSide===-1&&info.centroid>gateX+.012)motionStreak++;else if(approachSide===1&&info.centroid<gateX-.012)motionStreak++;else motionStreak=Math.max(0,motionStreak-1);if(motionStreak>=2){state='SENDING';sendFinish(frameTime);}}}
+   previousMotionFrame=current;if(syncRTT!=null)$('diag').textContent=`WSS RTT ${syncRTT.toFixed(0)} ms · Bewegung ${(lastMotion*100).toFixed(1)}%`;
+ }
+ scheduleFrame();
+}
+function scheduleFrame(){if('requestVideoFrameCallback'in HTMLVideoElement.prototype)video.requestVideoFrameCallback((now,meta)=>frame(meta&&Number.isFinite(meta.expectedDisplayTime)?meta.expectedDisplayTime:now));else requestAnimationFrame(frame);}
+function startFrameLoop(){scheduleFrame();}
+function grayFrame(data,W,H){const arr=[];for(let y=8;y<H-8;y+=4)for(let x=0;x<W;x+=4){const i=(y*W+x)*4;arr.push({x:x/W,v:(data[i]+data[i+1]+data[i+2])/3});}return arr;}
+function motionInfo(a,b,gx){const n=Math.min(a.length,b.length);let changed=0,total=0,sumX=0;for(let i=0;i<n;i++){const x=b[i].x;if(x<gx-.25||x>gx+.25)continue;total++;if(Math.abs(a[i].v-b[i].v)>24){changed++;sumX+=x;}}return{ratio:total?changed/total:0,centroid:changed?sumX/changed:null};}
+
+setInterval(()=>{if(mqttReady){try{sendPacket(new Uint8Array([0xC0,0x00]));}catch{}}},15000);
+setInterval(()=>{if(mqttReady){try{mqttPublish({type:'alive',source:'web',run:currentRunID});}catch{}}},5000);
+setInterval(()=>{if(lastAppSeen>0&&Date.now()-lastAppSeen>15000&&mqttReady){$('linkInfo').textContent=`WSS verbunden · App-Heartbeat fehlt · Session ${sid}`;}},3000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(!ws||ws.readyState>1))connectMQTT();});
+window.addEventListener('pageshow',e=>{if(e.persisted||!ws||ws.readyState>1)connectMQTT();});
+
+connectMQTT();
+})();
+</script>
+</body>
+</html>
